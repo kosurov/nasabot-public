@@ -1,0 +1,16 @@
+# tg bot
+bot.username=
+bot.token=
+
+# nasa
+nasa.apikey=
+
+# yandex translation
+yandex.folder.id=
+service.account.id=
+key.id=
+token.update.period=
+
+# ping task
+pingtask.url=
+pingtask.period=
