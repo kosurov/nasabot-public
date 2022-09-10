@@ -1,12 +1,12 @@
 package com.github.kosurov.nasabot.services;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Special app invoker for Heroku free plan.
@@ -20,12 +20,14 @@ public class PingTask {
     @Scheduled(fixedRateString = "${pingtask.period}")
     public void pingMe() {
         try {
-            URL pingTaskUrl = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) pingTaskUrl.openConnection();
-            connection.connect();
-            connection.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
+            RestTemplate restTemplate = new RestTemplate();
+            System.out.println(url);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+        } catch (HttpClientErrorException e) {
+            System.out.println(e.getStatusCode());
+            System.out.println(e.getResponseBodyAsString());
+        } catch (HttpServerErrorException e) {
+            System.out.println(e.getStatusCode());
         }
     }
 }
