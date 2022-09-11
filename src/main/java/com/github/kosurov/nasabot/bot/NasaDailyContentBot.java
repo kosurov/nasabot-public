@@ -115,12 +115,18 @@ public class NasaDailyContentBot extends TelegramLongPollingBot {
     public synchronized void sendNASAMessage(String chatId) {
         NasaResponse nasaResponse = nasaResponseService.nasaRequest();
         if ("video".equals(nasaResponse.getMediaType())) {
-            SendMessage sendMessage = new SendMessage();
-            sendMessage.setChatId(chatId);
-            String text = nasaResponse.getUrl() + "\n" + nasaResponse.getExplanation();
-            sendMessage.setText(text);
+            SendMessage sendTextMessage = new SendMessage();
+            sendTextMessage.setChatId(chatId);
+            String text = nasaResponse.getUrl() + "\n" + nasaResponse.getTitle();
+            sendTextMessage.setText(text);
+
+            SendMessage sendCaptionMessage = new SendMessage();
+            sendCaptionMessage.setChatId(chatId);
+            sendCaptionMessage.setText(nasaResponse.getExplanation());
+            setInlineForNasaCaption(sendCaptionMessage);
             try {
-                execute(sendMessage);
+                execute(sendTextMessage);
+                execute(sendCaptionMessage);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
